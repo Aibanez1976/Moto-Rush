@@ -6,63 +6,73 @@ import * as THREE from 'three'
 export function Road() {
   const { gameData } = useGame()
   const roadRef = useRef<THREE.Group>(null)
+  const roadOffsetRef = useRef(0)
 
-  useFrame(() => {
+  useFrame((_, delta) => {
     if (roadRef.current && gameData.gameState === 'playing') {
-      // Move road texture or segments to create movement effect
-      // This is a simple implementation - road segments could be added later
+      // Create scrolling road effect by moving road backward relative to motorcycle speed
+      const scrollSpeed = gameData.motorcycle.speed * 0.1 // Adjust scroll speed
+      roadOffsetRef.current += scrollSpeed * delta
+
+      // Reset offset when it gets too large to prevent floating point issues
+      if (roadOffsetRef.current > 10) {
+        roadOffsetRef.current = 0
+      }
+
+      // Apply the scrolling offset to create movement illusion
+      roadRef.current.position.z = roadOffsetRef.current
     }
   })
 
   return (
     <group ref={roadRef}>
-      {/* Main road surface */}
+      {/* Main road surface - extended length for scrolling effect */}
       <mesh position={[0, 0, 0]} receiveShadow>
-        <boxGeometry args={[8, 0.1, 100]} />
+        <boxGeometry args={[8, 0.1, 200]} />
         <meshStandardMaterial color="#333333" />
       </mesh>
-      
-      {/* Lane dividers */}
+
+      {/* Lane dividers - extended length */}
       {[-2.67, 2.67].map((laneX, index) => (
         <mesh key={index} position={[laneX, 0.05, 0]}>
-          <boxGeometry args={[0.1, 0.01, 100]} />
-          <meshStandardMaterial 
-            color="#FFFFFF" 
+          <boxGeometry args={[0.1, 0.01, 200]} />
+          <meshStandardMaterial
+            color="#FFFFFF"
             emissive="#333333"
             emissiveIntensity={0.2}
           />
         </mesh>
       ))}
-      
-      {/* Center line */}
+
+      {/* Center line - extended length */}
       <mesh position={[0, 0.05, 0]}>
-        <boxGeometry args={[0.1, 0.01, 100]} />
-        <meshStandardMaterial 
-          color="#FFFF00" 
+        <boxGeometry args={[0.1, 0.01, 200]} />
+        <meshStandardMaterial
+          color="#FFFF00"
           emissive="#FFFF00"
           emissiveIntensity={0.3}
         />
       </mesh>
-      
-      {/* Road edges */}
+
+      {/* Road edges - extended length */}
       <mesh position={[-4, 0.05, 0]}>
-        <boxGeometry args={[0.2, 0.01, 100]} />
+        <boxGeometry args={[0.2, 0.01, 200]} />
         <meshStandardMaterial color="#FFFFFF" />
       </mesh>
-      
+
       <mesh position={[4, 0.05, 0]}>
-        <boxGeometry args={[0.2, 0.01, 100]} />
+        <boxGeometry args={[0.2, 0.01, 200]} />
         <meshStandardMaterial color="#FFFFFF" />
       </mesh>
-      
-      {/* Shoulders */}
+
+      {/* Shoulders - extended length */}
       <mesh position={[-6, 0, 0]} receiveShadow>
-        <boxGeometry args={[2, 0.1, 100]} />
+        <boxGeometry args={[2, 0.1, 200]} />
         <meshStandardMaterial color="#8B4513" />
       </mesh>
-      
+
       <mesh position={[6, 0, 0]} receiveShadow>
-        <boxGeometry args={[2, 0.1, 100]} />
+        <boxGeometry args={[2, 0.1, 200]} />
         <meshStandardMaterial color="#8B4513" />
       </mesh>
     </group>

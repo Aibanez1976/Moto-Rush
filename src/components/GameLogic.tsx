@@ -105,14 +105,14 @@ export function GameLogic() {
       })
     }
 
-    // Update obstacles - ULTRA FAST: Move towards player much faster
+    // Update obstacles - Move obstacles toward player to create forward movement sensation
     gameData.obstacles.forEach(obstacle => {
       if (obstacle.active) {
-        // Move obstacles towards player at 3x the motorcycle speed for challenge
-        const obstacleSpeed = newSpeed * 3  // 3x faster than motorcycle
+        // Move obstacles toward player at the same speed as motorcycle for realistic approach
+        const obstacleSpeed = newSpeed
         const updatedObstacle = {
           ...obstacle,
-          position: [obstacle.position[0], obstacle.position[1], obstacle.position[2] + obstacleSpeed * delta] as [number, number, number]
+          position: [obstacle.position[0], obstacle.position[1], obstacle.position[2] - obstacleSpeed * delta] as [number, number, number]
         } as any
 
         // Check collision
@@ -143,8 +143,8 @@ export function GameLogic() {
           }
         }
 
-        // Remove obstacles that passed behind the player (closer distance)
-        if (updatedObstacle.position[2] > 5) {  // Reduced from 10 to 5
+        // Remove obstacles that passed behind the player (negative Z means behind)
+        if (updatedObstacle.position[2] < -10) {
           dispatch({ type: 'REMOVE_OBSTACLE', payload: obstacle.id })
         }
       }

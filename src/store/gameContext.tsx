@@ -178,7 +178,7 @@ export function useGame() {
 
 // Game utilities
 export const gameUtils = {
-  // Generate random obstacle - SPAWN CLOSER FOR FAST GAMEPLAY
+  // Generate random obstacle - SPAWN IN FRONT OF PLAYER FOR FORWARD MOVEMENT SENSATION
   createObstacle(id: string): Obstacle {
     const types: Obstacle['type'][] = ['car', 'cone', 'truck']
     const lanes = [0, 1, 2]
@@ -188,7 +188,7 @@ export const gameUtils = {
       id,
       type: types[Math.floor(Math.random() * types.length)],
       lane: lanes[Math.floor(Math.random() * lanes.length)],
-      position: [lanePositions[Math.floor(Math.random() * lanePositions.length)], 0, -15], // Start much closer (was -50)
+      position: [lanePositions[Math.floor(Math.random() * lanePositions.length)], 0, 25 + Math.random() * 50], // Spawn far ahead (25-75 units in front)
       active: true
     }
   },

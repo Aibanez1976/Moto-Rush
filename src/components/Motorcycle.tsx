@@ -8,7 +8,7 @@ export function Motorcycle() {
   const motorcycleRef = useRef<THREE.Group>(null)
   const lanePositions = useMemo(() => [-2.67, 0, 2.67], [])
 
-  useFrame(() => {
+  useFrame((_, delta) => {
     if (motorcycleRef.current && gameData.gameState === 'playing') {
       // Smoothly interpolate to target lane position
       const targetX = lanePositions[gameData.motorcycle.lane]
@@ -18,8 +18,9 @@ export function Motorcycle() {
         0.15
       )
 
-      // Update the position in state
-      // This is handled in the store by the move action
+      // Move motorcycle forward constantly to create forward movement sensation
+      const forwardSpeed = gameData.motorcycle.speed
+      motorcycleRef.current.position.z -= forwardSpeed * delta * 0.1 // Move forward at controlled speed
     }
   })
 

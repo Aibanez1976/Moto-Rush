@@ -8,16 +8,17 @@ export function GameCamera() {
 
   useFrame(() => {
     if (gameData.gameState === 'playing') {
-      // Smooth camera following the motorcycle
+      // Camera follows motorcycle but stays fixed relative to world
+      // This creates the illusion of forward movement
       const motorcyclePos = gameData.motorcycle.position
       const targetPosition = new THREE.Vector3(
-        motorcyclePos[0] * 0.3, // Smooth horizontal following
-        8,
-        12
+        motorcyclePos[0], // Follow horizontal position exactly
+        8,  // Fixed height
+        motorcyclePos[2] + 12 // Stay 12 units behind motorcycle
       )
-      
-      camera.position.lerp(targetPosition, 0.05)
-      camera.lookAt(motorcyclePos[0], motorcyclePos[1], motorcyclePos[2] - 5)
+
+      camera.position.lerp(targetPosition, 0.1) // Smooth following
+      camera.lookAt(motorcyclePos[0], motorcyclePos[1], motorcyclePos[2] - 2)
     }
   })
 
